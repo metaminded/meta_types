@@ -1,0 +1,25 @@
+# foo
+
+development:
+  adapter:  postgresql
+  encoding: unicode
+  database: meta_types_dev
+  pool:     5
+  username: hornp
+  password: 
+
+test:
+  adapter:  postgresql
+  encoding: unicode
+  database: meta_types_test
+  pool:     5
+  username: hornp
+  password: 
+
+production:
+  adapter:  postgresql
+  encoding: unicode
+  database: meta_types_prod
+  pool:     5
+  username: hornp
+  password: 
