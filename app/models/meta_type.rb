@@ -1,5 +1,16 @@
 # encoding: utf-8
+
 # (c) 2012 metaminded UG, all rights reserved
+
+<<-CREATE_SQL
+  create table meta_types (
+    id          serial PRIMARY KEY,
+    sid         character varying not null UNIQUE,
+    title       character varying not null UNIQUE,
+    created_at  timestamp without time zone,
+    updated_at  timestamp without time zone
+  );
+CREATE_SQL
 
 class MetaType < ActiveRecord::Base
 
@@ -15,10 +26,8 @@ class MetaType < ActiveRecord::Base
   validates_uniqueness_of :sid
 
   # class methods
-  class < self
-
+  class << self
     def [](sid) find_by_sid(sid); end
-
   end
 
   # # add the properties defined by self to the given variant
@@ -30,7 +39,7 @@ class MetaType < ActiveRecord::Base
   #   #v.save
   #   v
   # end
-  # 
+  #
   # def add_product_property_type(ppt, position=99999)
   #   PropertyType.transaction do
   #     # attach the new type to self
@@ -46,7 +55,7 @@ class MetaType < ActiveRecord::Base
   #     end
   #   end
   # end
-  # 
+  #
   # def remove_product_property_type(ppt)
   #   ProductPropertyType.find(ppt) unless ppt.is_a?(ProductPropertyType)
   #   ProductType.transaction do
@@ -62,17 +71,3 @@ class MetaType < ActiveRecord::Base
   # end
 end
 
-# =================================================================
-# Migrations
-# =================================================================
-module MetaType::Migration
-  Create = <<-SQL
-    create table product_types (
-      id          serial PRIMARY KEY,
-      sid         character varying null UNIQUE,
-      title       character varying not null UNIQUE,
-      created_at  timestamp without time zone,
-      updated_at  timestamp without time zone
-    );
-  SQL
-end
