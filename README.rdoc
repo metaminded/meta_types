@@ -1,3 +1,126 @@
 = MetaTypes
 
-This project rocks and uses MIT-LICENSE.
+This is like <a href="http://railscasts.com/episodes/345-hstore">hstore</a> on steroids ;)
+
+== Mission Objective
+
+As in the railscast mentioned above you frequently get in the situation to store values in the database without knowing the exact structure of the required data in advance. This is one of the really cool features of NoSQL databases like MongoDB.
+
+We often find that we need to configure the structure interactively. In traditional SQL databases, the <a href="http://en.wikipedia.org/wiki/Entity–attribute–value_model">EAV-Pattern</a> (or antipattern, rather), is used, for example to configure product types in  <a href="http://www.magentocommerce.com/">Magento</a>. This leads to zillions of tables and to <b>really ugly</b> queries, which need to be aggressively cached for performance reasons.
+
+Postgres offers THE SOLUTION to this problem, and we tried to make usage as simple as possible.
+
+This is currently very work-in-progress... Let's see how things evolve :)
+
+== Usage
+
+Create a table that has a <tt>&lt;yourcoice&gt;_hstore</yourcoice> column, in this case, we use <tt>properties</tt>
+
+<pre>
+  class Thing < ActiveRecord::Base
+    attr_accessible :name, :meta_type
+
+    meta_typed :properties
+
+  end
+</pre>
+
+Then, we define a <tt>MetaType</tt>
+
+<pre>
+  typ = MetaType.new(sid: 'typ', title: 'My Fancy Type')
+  typ.meta_type_properties = [
+    MetaTypeProperty.new(
+      sid:               'foo',
+      label:             'Foo',
+      property_type_sid: 'integer',
+      default_value:     '1'
+    ),
+    MetaTypeProperty.new(
+      sid:               'bar',
+      label:             'Bar',
+      property_type_sid: 'string',
+      default_value:     'lala'
+    ),
+    MetaTypeProperty.new(
+      sid:               'moo',
+      label:             'Moo',
+      property_type_sid: 'boolean',
+      default_value:     'true'
+    )
+  ]
+</pre>
+
+and use this to make actual models using the MetaType:
+
+(this is just an assorted collection from the tests)
+
+<pre>
+  # Defaults
+  thing = Thing.new(name: "Har har", meta_type: typ)
+  assert thing.save
+  assert thing.properties.foo == 1
+  assert thing.properties[:foo].value == 1
+  assert thing.properties.bar == 'lala'
+  assert thing.properties[:bar].value == 'lala'
+  assert thing.properties.moo == true
+  assert thing.properties[:moo].value == true
+
+  # Setters
+  prop = thing.properties
+  prop.foo = 2
+  prop.bar = "falleri"
+  prop.moo = false
+
+  assert_equal thing.properties.foo,         2
+  assert_equal thing.properties[:foo].value, 2
+  assert_equal thing.properties.bar,         'falleri'
+  assert_equal thing.properties[:bar].value, 'falleri'
+  assert_equal thing.properties.moo,         false
+  assert_equal thing.properties[:moo].value, false
+
+  # 'Mass Assignment'
+  thing1 = Thing.new(name: "Har har", meta_type: typ, properties_values: { foo: 2, bar: 'falleri', moo: false } ) 
+  thing2 = Thing.new(name: "Huhahah", meta_type: typ, properties_values: { foo: 4, bar: 'hollera', moo: false } ) 
+  thing3 = Thing.new(name: "hehehee", meta_type: typ, properties_values: { foo: 6, bar: 'trullala', moo: true } ) 
+  assert thing1.save && thing2.save && thing3.save
+
+  assert_equal thing1.properties.bar, 'falleri'
+  assert_equal thing2.properties.bar, 'hollera'
+  assert_equal thing3.properties.bar, 'trullala'
+
+  # Finding/Querying
+  assert_equal 0, Thing.where_properties(foo: 1).count
+  assert_equal 1, Thing.where_properties(foo: 2).count
+  assert_equal 0, Thing.where_properties(foo: 3).count
+  
+  assert_equal 0, Thing.where_properties_like(bar: '%ooo%').count
+  assert_equal 1, Thing.where_properties_like(bar: '%eri%').count
+  assert_equal 2, Thing.where_properties_like(bar: '%lle%').count
+  assert_equal 3, Thing.where_properties_like(bar: '%ll%').count
+</pre>
+
+== Bugs!
+
+There are roughly another 997 bugs in meta_types, although we do some testing (see <tt>spec/</tt>). So if you hunt them, please let me know using the <a href="https://github.com/metaminded/meta_types/issues">GitHub Bugtracker</a>.
+
+== Contributing to meta_types
+
+* Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet
+* Check out the <a href="https://github.com/metaminded/meta_types/issues">issue tracker</a> to make sure someone already hasn't requested it and/or contributed it
+* Fork the project
+* Start a feature/bugfix branch
+* Commit and push until you are happy with your contribution
+* Make sure to add tests for it. This is important so I don't break it in a future version unintentionally.
+* Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.
+* Feel free to send a pull request if you think others (me, for example) would like to have your change incorporated into future versions of meta_types.
+
+== License
+
+Copyright (c) 2012 Peter Horn, <a href="http://www.metaminded.com" target="_blank">metaminded UG</a>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
