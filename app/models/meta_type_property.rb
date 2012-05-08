@@ -32,6 +32,17 @@ class MetaTypeProperty < ActiveRecord::Base
   def property_type
     MetaTypes::MetaPropertyType[property_type_sid]
   end
+  
+  def set_position_for!(meta_type, pos)
+    meta_type_member = meta_type_members.where(meta_type_id: meta_type.id).first
+    meta_type_member.position = pos
+    meta_type_member.save!
+  end
+
+  def get_position_for(meta_type)
+    meta_type_member = meta_type_members.where(meta_type_id: meta_type.id).first
+    meta_type_member.position
+  end
 
   delegate :cast, :parse, to: :property_type
 

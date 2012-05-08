@@ -20,5 +20,10 @@ class MetaTypeMember < ActiveRecord::Base
   belongs_to :meta_type
   belongs_to :meta_type_property
 
+  after_create do
+    self.position ||= self.id
+    self.save!
+  end
+
 end
 

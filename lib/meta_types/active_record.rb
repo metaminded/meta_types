@@ -12,6 +12,13 @@ module MetaTypes::ActiveRecordAddons
         m = instance_variable_get(vnam)
         m ||= instance_variable_set(vnam, MetaTypes::MetaProperties.new(self, hstore))
       end
+      
+      define_method "#{nam}_values=" do |hash|
+        ppp = self.send nam
+        hash.each do |k,v|
+          ppp.send "#{k}=", v
+        end
+      end
     end
   end
 

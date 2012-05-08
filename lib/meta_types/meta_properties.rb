@@ -1,10 +1,10 @@
 class MetaTypes::MetaProperties
 
+  include Enumerable
+
   attr_accessor :_model
   attr_accessor :_hsname
   attr_accessor :_props
-
-  include Enumerable
 
   def initialize(model, hsname)
     self._model = model
@@ -17,10 +17,8 @@ class MetaTypes::MetaProperties
     end
   end
 
-  def each
-    _props.each do |k,v|
-      yield k,v
-    end
+  def each()
+    _props.each { |k,v| yield(v) }
   end
 
   def length
