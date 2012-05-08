@@ -19,6 +19,19 @@ module MetaTypes::ActiveRecordAddons
           ppp.send "#{k}=", v
         end
       end
+      attr_accessible "#{nam}_values"
+      
+      self.define_singleton_method "where_#{nam}" do |conditions_hash|
+        conditions_hash.inject(where("1=1")) do |relation, (k,v)|
+          relation.where("#{hstore} @> (? => ?)", k.to_s, v.to_s)
+        end
+      end
+
+      self.define_singleton_method "where_#{nam}_like" do |conditions_hash|
+        conditions_hash.inject(where("1=1")) do |relation, (k,v)|
+          relation.where("#{hstore} -> ? LIKE ?", k.to_s, v.to_s)
+        end
+      end
     end
   end
 

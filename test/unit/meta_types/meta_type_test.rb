@@ -95,4 +95,39 @@ class MetaTypes::MetaTypeTest < ActiveSupport::TestCase
     thing = Thing.find(thing.id)
     assert_equal [false, "falleri", 2], thing.properties.map(&:value)
   end
+  
+  test 'mass assign' do
+    typ = make()
+    assert typ.save
+
+    thing1 = Thing.new(name: "Har har", meta_type: typ, properties_values: { foo: 2, bar: 'falleri', moo: false } ) 
+    thing2 = Thing.new(name: "Huhahah", meta_type: typ, properties_values: { foo: 4, bar: 'hollera', moo: false } ) 
+    thing3 = Thing.new(name: "hehehee", meta_type: typ, properties_values: { foo: 6, bar: 'trullala', moo: true } ) 
+    assert thing1.save && thing2.save && thing3.save
+    thing1.reload
+    thing2.reload
+    thing3.reload
+    assert_equal thing1.properties.bar, 'falleri'
+    assert_equal thing2.properties.bar, 'hollera'
+    assert_equal thing3.properties.bar, 'trullala'
+  end
+  
+  test 'finding' do
+    typ = make()
+    assert typ.save
+
+    thing1 = Thing.new(name: "Har har", meta_type: typ, properties_values: { foo: 2, bar: 'falleri', moo: false } ) 
+    thing2 = Thing.new(name: "Huhahah", meta_type: typ, properties_values: { foo: 4, bar: 'hollera', moo: false } ) 
+    thing3 = Thing.new(name: "hehehee", meta_type: typ, properties_values: { foo: 6, bar: 'trullala', moo: true } ) 
+    assert thing1.save && thing2.save && thing3.save
+    
+    assert_equal 0, Thing.where_properties(foo: 1).count
+    assert_equal 1, Thing.where_properties(foo: 2).count
+    assert_equal 0, Thing.where_properties(foo: 3).count
+    
+    assert_equal 0, Thing.where_properties_like(bar: '%ooo%').count
+    assert_equal 1, Thing.where_properties_like(bar: '%eri%').count
+    assert_equal 2, Thing.where_properties_like(bar: '%lle%').count
+    assert_equal 3, Thing.where_properties_like(bar: '%ll%').count
+  end
 end
