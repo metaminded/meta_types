@@ -112,7 +112,7 @@ class MetaTypes::MetaTypeTest < ActiveSupport::TestCase
     assert_equal thing3.properties.bar, 'trullala'
   end
   
-  test 'finding' do
+  test 'conditions' do
     typ = make()
     assert typ.save
 
