@@ -18,6 +18,8 @@ CREATE_SQL
 
 class MetaTypeProperty < ActiveRecord::Base
 
+  attr_accessible :sid, :label, :property_type_sid, :default_value, :required, :dimension
+
   # Associations
   has_many :meta_type_members
   has_many :meta_types, :through => :meta_type_members
@@ -25,12 +27,16 @@ class MetaTypeProperty < ActiveRecord::Base
   # Validations
   validates_presence_of :label
   validates_presence_of :property_type_sid
-  validates_inclusion_of :property_type_sid, MetaPropertyType.sids
+  validates_inclusion_of :property_type_sid, in: MetaTypes::MetaPropertyType.sids
+
+  def property_type
+    MetaTypes::MetaPropertyType[property_type_sid]
+  end
+
+  delegate :cast, :parse, to: :property_type
 
   class << self
     def [](sid) find_by_sid(sid); end
   end
-
-
 end
 

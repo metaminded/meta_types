@@ -1,0 +1,1 @@
+../../../../db/migrate/20120507130230_create_hstore.rb

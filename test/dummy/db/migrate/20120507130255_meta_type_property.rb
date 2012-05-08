@@ -1,0 +1,1 @@
+../../../../db/migrate/20120507130255_meta_type_property.rb

@@ -97,5 +97,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  activerecord-postgres-hstore
   jquery-rails
   meta_types!
