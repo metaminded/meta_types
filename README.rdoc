@@ -16,18 +16,15 @@ This is currently very work-in-progress... Let's see how things evolve :)
 
 Create a table that has a <tt>&lt;yourcoice&gt;_hstore</yourcoice> column, in this case, we use <tt>properties</tt>
 
-<pre>
   class Thing < ActiveRecord::Base
     attr_accessible :name, :meta_type
 
     meta_typed :properties
 
   end
-</pre>
 
 Then, we define a <tt>MetaType</tt>
 
-<pre>
   typ = MetaType.new(sid: 'typ', title: 'My Fancy Type')
   typ.meta_type_properties = [
     MetaTypeProperty.new(
@@ -49,13 +46,11 @@ Then, we define a <tt>MetaType</tt>
       default_value:     'true'
     )
   ]
-</pre>
 
 and use this to make actual models using the MetaType:
 
 (this is just an assorted collection from the tests)
 
-<pre>
   # Defaults
   thing = Thing.new(name: "Har har", meta_type: typ)
   assert thing.save
@@ -98,7 +93,6 @@ and use this to make actual models using the MetaType:
   assert_equal 1, Thing.where_properties_like(bar: '%eri%').count
   assert_equal 2, Thing.where_properties_like(bar: '%lle%').count
   assert_equal 3, Thing.where_properties_like(bar: '%ll%').count
-</pre>
 
 == Bugs!
 
