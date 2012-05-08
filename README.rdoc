@@ -1,12 +1,12 @@
 = MetaTypes
 
-This is like <a href="http://railscasts.com/episodes/345-hstore">hstore</a> on steroids ;)
+This is like {hstore}[http://railscasts.com/episodes/345-hstore] on steroids ;)
 
 == Mission Objective
 
 As in the railscast mentioned above you frequently get in the situation to store values in the database without knowing the exact structure of the required data in advance. This is one of the really cool features of NoSQL databases like MongoDB.
 
-We often find that we need to configure the structure interactively. In traditional SQL databases, the <a href="http://en.wikipedia.org/wiki/Entity–attribute–value_model">EAV-Pattern</a> (or antipattern, rather), is used, for example to configure product types in  <a href="http://www.magentocommerce.com/">Magento</a>. This leads to zillions of tables and to <b>really ugly</b> queries, which need to be aggressively cached for performance reasons.
+We often find that we need to configure the structure interactively. In traditional SQL databases, the {EAV-Pattern}[http://en.wikipedia.org/wiki/Entity–attribute–value_model] (or antipattern, rather), is used, for example to configure product types in {Magento}[http://www.magentocommerce.com/]. This leads to zillions of tables and to <b>really ugly</b> queries, which need to be aggressively cached for performance reasons.
 
 Postgres offers THE SOLUTION to this problem, and we tried to make usage as simple as possible.
 
@@ -96,12 +96,12 @@ and use this to make actual models using the MetaType:
 
 == Bugs!
 
-There are roughly another 997 bugs in meta_types, although we do some testing (see <tt>spec/</tt>). So if you hunt them, please let me know using the <a href="https://github.com/metaminded/meta_types/issues">GitHub Bugtracker</a>.
+There are roughly another 997 bugs in meta_types, although we do some testing (see <tt>test/</tt>). So if you hunt them, please let me know using the {GitHub Bugtracker}[https://github.com/metaminded/meta_types/issues].
 
 == Contributing to meta_types
 
 * Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet
-* Check out the <a href="https://github.com/metaminded/meta_types/issues">issue tracker</a> to make sure someone already hasn't requested it and/or contributed it
+* Check out the {issue tracker}[https://github.com/metaminded/meta_types/issues] to make sure someone already hasn't requested it and/or contributed it
 * Fork the project
 * Start a feature/bugfix branch
 * Commit and push until you are happy with your contribution
@@ -111,7 +111,7 @@ There are roughly another 997 bugs in meta_types, although we do some testing (s
 
 == License
 
-Copyright (c) 2012 Peter Horn, <a href="http://www.metaminded.com" target="_blank">metaminded UG</a>
+Copyright (c) 2012 Peter Horn, {metaminded UG}[http://www.metaminded.com]
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
