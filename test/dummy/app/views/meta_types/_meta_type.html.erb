@@ -1,4 +1,4 @@
-<%= simple_form_for @meta_type do |f| %>
+<%= simple_form_for @meta_type, :html => {:class => 'form-horizontal' } do |f| %>
   <%= f.input :title %>
   <%= f.input :sid %>
   <%= f.association :meta_type_properties %>
