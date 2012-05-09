@@ -17,5 +17,11 @@ class MetaTypes::MetaProperty
     meta_properties.set_value(sid, meta_type_property.parse(val))
   end
 
+  def choices()
+    mtp = meta_type_property
+    return nil if mtp.choices.blank?
+    mtp.split('||').map(&:strip)
+  end
+
   delegate :sid, :label, :default_value, :unit, :meta_property_type, to: :meta_type_property
 end

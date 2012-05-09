@@ -25,7 +25,9 @@ class MetaTypes::MetaProperties
     end
   end
 
-  def persisted?() false end
+  def persisted?()
+    false
+  end
 
   def each()
     _props.each { |k,v| yield(v) }
@@ -50,5 +52,17 @@ class MetaTypes::MetaProperties
 
   def [](sid)
     _props[sid.to_s]
+  end
+  
+  def column_for_attribute(sid)
+    MetaTypeProperty[sid]
+  end
+  
+  class << self
+    def validators_on(sid)
+      MetaTypeProperty[sid].required? ? 
+        [ActiveModel::Validations::PresenceValidator.new(attributes: [:title])] : 
+        []
+    end
   end
 end

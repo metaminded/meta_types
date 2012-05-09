@@ -10,6 +10,7 @@ class MetaTypeProperty < ActiveRecord::Migration
         system            boolean not null default false,
         dimension         character varying null default null,
         default_value     character varying null default null,
+        choices           character varying,
         created_at        timestamp without time zone,
         updated_at        timestamp without time zone
       );
@@ -17,8 +18,6 @@ class MetaTypeProperty < ActiveRecord::Migration
   end
 
   def down
-    def down
-      execute "drop table meta_type_properties"
-    end
+    execute "drop table meta_type_properties"
   end
 end

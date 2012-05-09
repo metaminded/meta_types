@@ -88,6 +88,7 @@ CREATE TABLE meta_type_properties (
     system boolean DEFAULT false NOT NULL,
     dimension character varying,
     default_value character varying,
+    choices character varying,
     created_at timestamp without time zone,
     updated_at timestamp without time zone
 );

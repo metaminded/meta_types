@@ -54,6 +54,16 @@ class MetaTypeProperty < ActiveRecord::Base
     meta_type_member.position
   end
 
+  def type
+    {integer: :numeric}[property_type_sid.to_sym] || property_type_sid.to_sym
+  end
+
+  def number?
+    %w{integer float}.member? property_type_sid
+  end
+  
+  def limit() nil end
+
   delegate :cast, :parse, to: :property_type
 
   class << self
