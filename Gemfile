@@ -8,6 +8,8 @@ gemspec
 # jquery-rails is used by the dummy application
 gem "jquery-rails"
 gem 'activerecord-postgres-hstore'
+gem 'simple_form'
+gem 'cruddler', git: 'https://github.com/provideal/cruddler'
 
 # Declare any dependencies that are still in development here instead of in
 # your gemspec. These might include edge Rails or gems from your path or

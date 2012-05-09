@@ -1,0 +1,12 @@
+<h1>New Thing</h1>
+
+<% if @thing %>
+  <%= render :partial => 'thing' %>
+<% else %>
+  <%= form_tag({}, method: :get) do %>
+    <%= select_tag :meta_type, options_from_collection_for_select(MetaType.all, :sid, :title )%>
+    <%= submit_tag :OK %>
+  <% end %>
+<% end %>
+
+<%= link_to "Abort", things_path() %>

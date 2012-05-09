@@ -1,0 +1,9 @@
+<h1>MetaTypeProperties</h1>
+
+<ul>
+  <% @meta_type_properties.each do |meta_type_property| %>
+    <li><%= link_to meta_type_property.name, edit_meta_type_property_path(meta_type_property) %></li>
+  <% end %>
+</ul>
+
+<%= link_to "New MetaTypeProperty", new_meta_type_property_path() %>

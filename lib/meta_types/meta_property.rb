@@ -18,5 +18,4 @@ class MetaTypes::MetaProperty
   end
 
   delegate :sid, :label, :default_value, :unit, :meta_property_type, to: :meta_type_property
-
 end

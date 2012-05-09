@@ -13,13 +13,13 @@ module MetaTypes::ActiveRecordAddons
         m ||= instance_variable_set(vnam, MetaTypes::MetaProperties.new(self, hstore))
       end
       
-      define_method "#{nam}_values=" do |hash|
+      define_method "#{nam}_attributes=" do |hash|
         ppp = self.send nam
         hash.each do |k,v|
           ppp.send "#{k}=", v
         end
       end
-      attr_accessible "#{nam}_values"
+      attr_accessible "#{nam}_attributes"
       
       self.define_singleton_method "where_#{nam}" do |conditions_hash|
         conditions_hash.inject(where("1=1")) do |relation, (k,v)|

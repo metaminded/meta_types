@@ -1,0 +1,8 @@
+<%= simple_form_for @meta_type_property do |f| %>
+  <%= f.input :label %>
+  <%= f.input :sid %>
+  <%= f.input :default_value %>
+  <%= f.input :dimension %>
+  <%= f.input :property_type_sid, collection: MetaTypes::MetaPropertyType.sids %>
+  <%= f.submit %>
+<% end %>

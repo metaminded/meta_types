@@ -10,12 +10,22 @@ class MetaTypes::MetaProperties
     self._model = model
     self._hsname = hsname
     self._props = meta_type && meta_type.meta_type_properties.inject({}) do |h, mp|
+
       h[mp.sid] = MetaTypes::MetaProperty.new(self, mp.sid)
-      self.define_singleton_method mp.sid do h[mp.sid].value end
-      self.define_singleton_method "#{mp.sid}=" do |v| h[mp.sid].value = v end
+
+      self.define_singleton_method mp.sid do
+        h[mp.sid].value
+      end
+
+      self.define_singleton_method "#{mp.sid}=" do |v|
+        h[mp.sid].value = v
+      end
+
       h
     end
   end
+
+  def persisted?() false end
 
   def each()
     _props.each { |k,v| yield(v) }

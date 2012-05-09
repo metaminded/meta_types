@@ -1,0 +1,10 @@
+<%= simple_form_for @thing do |f| %>
+  <%= f.input :meta_type_id, as: :hidden %>
+  <%= f.input :name %>
+  <%= f.fields_for :properties do |ff| %>
+    <% @thing.properties.each do |prop| %>
+      <%= ff.input prop.sid %>
+    <% end %>
+  <% end %>
+  <%= f.submit %>
+<% end %>

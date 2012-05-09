@@ -75,9 +75,9 @@ and use this to make actual models using the MetaType:
   assert_equal thing.properties[:moo].value, false
 
   # 'Mass Assignment'
-  thing1 = Thing.new(name: "Har har", meta_type: typ, properties_values: { foo: 2, bar: 'falleri', moo: false } ) 
-  thing2 = Thing.new(name: "Huhahah", meta_type: typ, properties_values: { foo: 4, bar: 'hollera', moo: false } ) 
-  thing3 = Thing.new(name: "hehehee", meta_type: typ, properties_values: { foo: 6, bar: 'trullala', moo: true } ) 
+  thing1 = Thing.new(name: "Har har", meta_type: typ, properties_attributes: { foo: 2, bar: 'falleri', moo: false } ) 
+  thing2 = Thing.new(name: "Huhahah", meta_type: typ, properties_attributes: { foo: 4, bar: 'hollera', moo: false } ) 
+  thing3 = Thing.new(name: "hehehee", meta_type: typ, properties_attributes: { foo: 6, bar: 'trullala', moo: true } ) 
   assert thing1.save && thing2.save && thing3.save
 
   assert_equal thing1.properties.bar, 'falleri'

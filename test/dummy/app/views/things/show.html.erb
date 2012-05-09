@@ -1,0 +1,10 @@
+<h1>Thing <i><%= @thing.name %></i></h1>
+
+<ul>
+  <li><b>Name:</b> <%= @thing.name %></li>
+  <% @thing.properties.each do |prop| %>
+    <li><b><%= prop.label %>:</b> <%= prop.value %> (i.e., <%= @thing.properties.send prop.sid %>)
+  <% end %>
+</ul>
+
+<%= link_to 'Edit', edit_thing_path(@thing) %>

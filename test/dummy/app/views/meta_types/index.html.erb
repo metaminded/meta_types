@@ -1,0 +1,9 @@
+<h1>MetaTypes</h1>
+
+<ul>
+  <% @meta_types.each do |meta_type| %>
+    <li><%= link_to meta_type.title, edit_meta_type_path(meta_type) %></li>
+  <% end %>
+</ul>
+
+<%= link_to "New MetaType", new_meta_type_path() %>

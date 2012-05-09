@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
-
-  mount MetaTypes::Engine => "/meta_types"
+  resources :meta_types
+  resources :meta_type_properties
+  resources :things
+  root to: 'dashboard#index'
 end

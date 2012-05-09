@@ -1,0 +1,6 @@
+<%= simple_form_for @meta_type do |f| %>
+  <%= f.input :title %>
+  <%= f.input :sid %>
+  <%= f.association :meta_type_properties %>
+  <%= f.submit %>
+<% end %>
