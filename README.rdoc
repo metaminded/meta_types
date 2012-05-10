@@ -152,6 +152,10 @@ In the <tt>hstore</tt> column, the properties are saved in the form
   
 where <tt>sid</tt> is the sid of the <tt>meta_type_property</tt> and the value (can only be a string in the db) is automatically converted.
 
+== Demo App (seriously!)
+
+in test/dummy there is a demo app where you can intereactively create properties, types and models. Check it out.
+
 == Bugs!
 
 There are roughly another 997 bugs in meta_types, although we do some testing (see <tt>test/</tt>). So if you hunt them, please let me know using the {GitHub Bugtracker}[https://github.com/metaminded/meta_types/issues].
