@@ -9,7 +9,7 @@ class MetaTypes::MetaProperties
   def initialize(model, hsname)
     self._model = model
     self._hsname = hsname
-    self._props = meta_type && meta_type.meta_type_properties.inject({}) do |h, mp|
+    self._props = meta_type && meta_type.meta_type_properties.ordered.inject({}) do |h, mp|
 
       h[mp.sid] = MetaTypes::MetaProperty.new(self, mp.sid)
 
@@ -23,6 +23,31 @@ class MetaTypes::MetaProperties
 
       h
     end
+  end
+
+  def update_attributes(hashh)
+    hash = hashh.dup
+    date_keys = hash.keys.select{|k| /\([123]i\)\Z/.match(k) }.map{|k|
+      k.split("(").first
+    }.uniq.each{|k|
+      dats = (1..3).map{|i| hash.delete("#{k}(#{i}i)")}.join("-")
+      self.send "#{k}=", dats
+    }
+    hash.each do |k,v|
+      self.send "#{k}=", v
+    end
+  end
+
+  def validate
+    raise "saa"
+  end
+
+  def valid?
+    inject([]) do |e, v|
+      v.required && v.value.blank? ?
+        e << "#{v.label} must be present" :
+        e
+    end.join(", ").presence
   end
 
   def persisted?()
@@ -53,15 +78,15 @@ class MetaTypes::MetaProperties
   def [](sid)
     _props[sid.to_s]
   end
-  
+
   def column_for_attribute(sid)
     MetaTypeProperty[sid]
   end
-  
+
   class << self
     def validators_on(sid)
-      MetaTypeProperty[sid].required? ? 
-        [ActiveModel::Validations::PresenceValidator.new(attributes: [:title])] : 
+      MetaTypeProperty[sid].required? ?
+        [ActiveModel::Validations::PresenceValidator.new(attributes: [:title])] :
         []
     end
   end

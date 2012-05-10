@@ -17,6 +17,12 @@ typ.meta_type_properties = [
     label:             'Moo',
     property_type_sid: 'boolean',
     default_value:     'true'
+  ),
+  MetaTypeProperty.new(
+    sid:               'birthday',
+    label:             'Birthday',
+    property_type_sid: 'date',
+    default_value:     nil
   )
 ]
 typ.save!

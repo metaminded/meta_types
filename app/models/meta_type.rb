@@ -17,7 +17,7 @@ class MetaType < ActiveRecord::Base
   attr_accessible :sid, :title, :meta_type_property_ids
 
   has_many :meta_type_members
-  has_many :meta_type_properties, :through => :meta_type_members #, :order => "meta_type_members.position asc"
+  has_many :meta_type_properties, :through => :meta_type_members
 
   accepts_nested_attributes_for :meta_type_members
   accepts_nested_attributes_for :meta_type_properties

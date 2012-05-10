@@ -3,7 +3,7 @@
   <%= f.input :name %>
   <%= f.fields_for :properties do |ff| %>
     <% @thing.properties.each do |prop| %>
-      <%= ff.input prop.sid %>
+      <%= ff.input prop.sid, collection: prop.choices, label: prop.label %>
     <% end %>
   <% end %>
   <%= f.submit %>

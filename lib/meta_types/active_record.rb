@@ -12,15 +12,12 @@ module MetaTypes::ActiveRecordAddons
         m = instance_variable_get(vnam)
         m ||= instance_variable_set(vnam, MetaTypes::MetaProperties.new(self, hstore))
       end
-      
+
       define_method "#{nam}_attributes=" do |hash|
-        ppp = self.send nam
-        hash.each do |k,v|
-          ppp.send "#{k}=", v
-        end
+        self.send(nam).update_attributes(hash)
       end
       attr_accessible "#{nam}_attributes"
-      
+
       self.define_singleton_method "where_#{nam}" do |conditions_hash|
         conditions_hash.inject(where("1=1")) do |relation, (k,v)|
           relation.where("#{hstore} @> (? => ?)", k.to_s, v.to_s)
@@ -32,6 +29,11 @@ module MetaTypes::ActiveRecordAddons
           relation.where("#{hstore} -> ? LIKE ?", k.to_s, v.to_s)
         end
       end
+
+      # validate do
+      #   v = self.send(nam).valid?
+      #   errors.add(nam, v) if v.present?
+      # end
     end
   end
 

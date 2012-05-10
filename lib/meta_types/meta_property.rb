@@ -18,10 +18,10 @@ class MetaTypes::MetaProperty
   end
 
   def choices()
-    mtp = meta_type_property
-    return nil if mtp.choices.blank?
-    mtp.split('||').map(&:strip)
+    ch = meta_type_property.choices.presence
+    ch && ch.split('||').map(&:strip)
   end
 
-  delegate :sid, :label, :default_value, :unit, :meta_property_type, to: :meta_type_property
+  delegate :sid, :label, :default_value, :unit, :meta_property_type, :required,
+    to: :meta_type_property
 end

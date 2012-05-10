@@ -18,7 +18,7 @@ CREATE_SQL
 
 class MetaTypeProperty < ActiveRecord::Base
 
-  attr_accessible :sid, :label, :property_type_sid, :default_value, :required, :dimension
+  attr_accessible :sid, :label, :property_type_sid, :default_value, :required, :dimension, :choices
 
   # Associations
   has_many :meta_type_members
@@ -36,6 +36,7 @@ class MetaTypeProperty < ActiveRecord::Base
   validates_exclusion_of :sid, in: MetaTypes::MetaProperties.instance_methods.map(&:to_s),
     message: "overrides core functionality, please don't use that."
 
+  scope :ordered, order("meta_type_members.position asc")
 
   def name() "#{label} (#{property_type_sid}) " end
 
@@ -61,7 +62,7 @@ class MetaTypeProperty < ActiveRecord::Base
   def number?
     %w{integer float}.member? property_type_sid
   end
-  
+
   def limit() nil end
 
   delegate :cast, :parse, to: :property_type
