@@ -1,100 +1,162 @@
 = MetaTypes
 
-This is like {hstore}[http://railscasts.com/episodes/345-hstore] on steroids ;)
+This is like {hstore}[http://railscasts.com/episodes/345-hstore] on steroids ;) It actually uses hstore for storage.
 
 There is a {demo app on heroku}[http://meta-types.herokuapp.com/] ({code is here}[https://github.com/no-dashes/meta_types_demo])
 
 == Mission Objective
 
-As in the railscast mentioned above you frequently get in the situation to store values in the database without knowing the exact structure of the required data in advance. This is one of the really cool features of NoSQL databases like MongoDB.
+As in the railscast mentioned above, you frequently get in the situation to store values in the database without knowing the exact structure of the required data in advance. This is one of the really cool features of NoSQL databases like MongoDB.
 
 We often find that we need to configure the structure interactively. In traditional SQL databases, the {EAV-Pattern}[http://en.wikipedia.org/wiki/Entity–attribute–value_model] (or antipattern, rather), is used, for example to configure product types in {Magento}[http://www.magentocommerce.com/]. This leads to zillions of tables and to <b>really ugly</b> queries, which need to be aggressively cached for performance reasons.
 
 Postgres offers THE SOLUTION to this problem, and we tried to make usage as simple as possible.
 
-This is currently very work-in-progress... Let's see how things evolve :)
+This is currently quite work-in-progress... Let's see how things evolve :)
 
 == Usage
 
-Create a table that has a <tt>&lt;yourcoice&gt;_hstore</yourcoice> column, in this case, we use <tt>properties</tt>
+Create a table that has a <tt>yourcoice_hstore</tt> column, in this case, we use <tt>properties_hstore</tt>
+
+  class CreateThings < ActiveRecord::Migration
+    def change
+      execute <<-SQL
+        create table things(
+          id      serial primary key,
+          meta_type_id integer references meta_types(id),
+          title    character varying,
+          properties_hstore hstore,
+          created_at timestamp without time zone,
+          updated_at timestamp without time zone
+        )
+      SQL
+    end
+  end
+
+in the corresponding class, we declare that we want to mount the meta_type information with the name <tt>properties</tt>.
 
   class Thing < ActiveRecord::Base
-    attr_accessible :name, :meta_type
+    attr_accessible :titile, :meta_type
 
     meta_typed :properties
 
   end
 
-Then, we define a <tt>MetaType</tt>
+Then, get the necessary migrations:
 
-  typ = MetaType.new(sid: 'typ', title: 'My Fancy Type')
+  $ rake meta_types:install:migrations
+
+which installs the create table migrations for <tt>meta_type</tt>, <tt>meta_type_property</tt> and the mapping table <tt>meta_type_member</tt>.
+
+We then define a <tt>MetaType</tt>: (<tt>sid</tt> is string-id ;))
+
+  typ = MetaType.new(sid: 'address', title: 'My Fancy Address')
   typ.meta_type_properties = [
     MetaTypeProperty.new(
-      sid:               'foo',
-      label:             'Foo',
+      sid:               'age',
+      label:             'Age',
       property_type_sid: 'integer',
-      default_value:     '1'
+      default_value:     '10'
     ),
     MetaTypeProperty.new(
-      sid:               'bar',
-      label:             'Bar',
+      sid:               'name',
+      label:             'Name',
+      property_type_sid: 'string'
+    ),
+    MetaTypeProperty.new(
+      sid:               'gender',
+      label:             'Gender',
       property_type_sid: 'string',
-      default_value:     'lala'
+      choices:           'male||female||other'
     ),
     MetaTypeProperty.new(
-      sid:               'moo',
-      label:             'Moo',
+      sid:               'active',
+      label:             'Active',
       property_type_sid: 'boolean',
       default_value:     'true'
     )
   ]
 
-and use this to make actual models using the MetaType:
+the available types for <tt>property_type_sid</tt> are
+* integer
+* string
+* text (multi-line stings, the only difference is the way that simple_form renders the input)
+* boolean
+* float
+* date
 
-(this is just an assorted collection from the tests)
+If the <tt>choices</tt> are set, <tt>simple_form</tt> can easily offer an select-box as input. The individual values are separated by ||.
 
-  # Defaults
-  thing = Thing.new(name: "Har har", meta_type: typ)
+You can now use the defined <tt>meta_type</tt> to add the defined attributes to another model:
+
+  thing = Thing.new(title: "MetaTypes Rock!", meta_type: typ)
   assert thing.save
-  assert thing.properties.foo == 1
-  assert thing.properties[:foo].value == 1
-  assert thing.properties.bar == 'lala'
-  assert thing.properties[:bar].value == 'lala'
-  assert thing.properties.moo == true
-  assert thing.properties[:moo].value == true
 
-  # Setters
-  prop = thing.properties
-  prop.foo = 2
-  prop.bar = "falleri"
-  prop.moo = false
+the defined attributes are available on the <tt>properties</tt> pseudo-relation of the <tt>thing</tt>, e.g.:
 
-  assert_equal thing.properties.foo,         2
-  assert_equal thing.properties[:foo].value, 2
-  assert_equal thing.properties.bar,         'falleri'
-  assert_equal thing.properties[:bar].value, 'falleri'
-  assert_equal thing.properties.moo,         false
-  assert_equal thing.properties[:moo].value, false
+  thing.properties.age == 10
+  thing.properties.active == true
 
-  # 'Mass Assignment'
-  thing1 = Thing.new(name: "Har har", meta_type: typ, properties_attributes: { foo: 2, bar: 'falleri', moo: false } )
-  thing2 = Thing.new(name: "Huhahah", meta_type: typ, properties_attributes: { foo: 4, bar: 'hollera', moo: false } )
-  thing3 = Thing.new(name: "hehehee", meta_type: typ, properties_attributes: { foo: 6, bar: 'trullala', moo: true } )
-  assert thing1.save && thing2.save && thing3.save
+and using <tt>properties[sid]</tt>, you can access the <tt>MetaPeroperty</tt> object encapsulating the actual data and attribute definition, e.g.:
 
-  assert_equal thing1.properties.bar, 'falleri'
-  assert_equal thing2.properties.bar, 'hollera'
-  assert_equal thing3.properties.bar, 'trullala'
+  thing.properties[:age].value == 10
+  thing.properties[:active].value == true
+  thing.properties[:active].label == 'Active'
+  thing.properties[:active].sid == 'active'
 
-  # Finding/Querying
-  assert_equal 0, Thing.where_properties(foo: 1).count
-  assert_equal 1, Thing.where_properties(foo: 2).count
-  assert_equal 0, Thing.where_properties(foo: 3).count
+the properties can be set using
 
-  assert_equal 0, Thing.where_properties_like(bar: '%ooo%').count
-  assert_equal 1, Thing.where_properties_like(bar: '%eri%').count
-  assert_equal 2, Thing.where_properties_like(bar: '%lle%').count
-  assert_equal 3, Thing.where_properties_like(bar: '%ll%').count
+  thing.properties.name = "Ryan Bates ;)"
+  thing.properties.gender = "male"
+
+'Mass Assignment' also works so that you can construct a form like that:
+
+  <%= simple_form_for @thing do |f| %>
+    <%= f.input :meta_type_id, as: :hidden %>
+    <%= f.input :name %>
+    <%= f.fields_for :properties do |ff| %>
+      <% @thing.properties.each do |prop| %>
+        <%= ff.input prop.sid, collection: prop.choices, label: prop.label %>
+      <% end %>
+    <% end %>
+    <%= f.submit %>
+  <% end %>
+
+or programmatically:
+
+  thing = Thing.new(
+    title: "Har har",
+    meta_type: typ,
+    properties_attributes: {
+      age:  125,
+      name: 'Methusalix',
+      gender: 'male',
+      active: true
+    }
+  )
+
+The same works with <tt>update_attributes</tt> so that no special care needs to be taken in the controllers.
+
+== Querying/Finding
+
+To allow easy finding, we add methods to the <tt>meta_typed</tt> model:
+
+  Thing.where_properties(age: 10)
+  Thing.where_properties_like(name: '%salix%')
+
+They may of course be chained for they are just ARels on <tt>Thing</tt>
+
+== How is it done?
+
+In the <tt>hstore</tt> column, the properties are saved in the form
+
+  sid -> value
+
+where <tt>sid</tt> is the sid of the <tt>meta_type_property</tt> and the value (can only be a string in the db) is automatically converted.
+
+== Demo App (seriously!)
+
+There is a {demo app on heroku}[http://meta-types.herokuapp.com/] ({code is here}[https://github.com/no-dashes/meta_types_demo])
 
 == Bugs!
 
