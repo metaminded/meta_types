@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.email       = ["ph@mateminded.com"]
   s.homepage    = "http://github.com/metaminded/meta_types"
   s.summary     = "DB-Configurable type description."
-  s.description = "DB-Configurable type description. Uses HStore on the models"
+  s.description = "DB-Configurable type description. Uses hstore on the models. A demo app is running at http://meta-types.herokuapp.com"
 
   s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.rdoc"]
   s.test_files = Dir["test/**/*"]

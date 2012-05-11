@@ -16,6 +16,20 @@ This is currently quite work-in-progress... Let's see how things evolve :)
 
 == Usage
 
+=== Gemfile
+
+As always
+
+  gem 'meta_types'
+
+or, for the brave:
+
+  gem 'meta_types', git: 'https://github.com/metaminded/meta_types'
+
+in your <tt>Gemfile</tt>.
+
+=== Migrations
+
 Create a table that has a <tt>yourcoice_hstore</tt> column, in this case, we use <tt>properties_hstore</tt>
 
   class CreateThings < ActiveRecord::Migration
@@ -47,6 +61,8 @@ Then, get the necessary migrations:
   $ rake meta_types:install:migrations
 
 which installs the create table migrations for <tt>meta_type</tt>, <tt>meta_type_property</tt> and the mapping table <tt>meta_type_member</tt>.
+
+=== Define the Meta Type
 
 We then define a <tt>MetaType</tt>: (<tt>sid</tt> is string-id ;))
 
@@ -86,6 +102,8 @@ the available types for <tt>property_type_sid</tt> are
 * date
 
 If the <tt>choices</tt> are set, <tt>simple_form</tt> can easily offer an select-box as input. The individual values are separated by ||.
+
+=== Create meta_typed model
 
 You can now use the defined <tt>meta_type</tt> to add the defined attributes to another model:
 
@@ -137,7 +155,7 @@ or programmatically:
 
 The same works with <tt>update_attributes</tt> so that no special care needs to be taken in the controllers.
 
-== Querying/Finding
+=== Querying/Finding
 
 To allow easy finding, we add methods to the <tt>meta_typed</tt> model:
 
