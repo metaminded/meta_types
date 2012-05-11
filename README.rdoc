@@ -2,6 +2,8 @@
 
 This is like {hstore}[http://railscasts.com/episodes/345-hstore] on steroids ;)
 
+There is a {demo app on heroku}[http://meta-types.herokuapp.com/] ({code is here}[https://github.com/no-dashes/meta_types_demo])
+
 == Mission Objective
 
 As in the railscast mentioned above you frequently get in the situation to store values in the database without knowing the exact structure of the required data in advance. This is one of the really cool features of NoSQL databases like MongoDB.
@@ -75,9 +77,9 @@ and use this to make actual models using the MetaType:
   assert_equal thing.properties[:moo].value, false
 
   # 'Mass Assignment'
-  thing1 = Thing.new(name: "Har har", meta_type: typ, properties_attributes: { foo: 2, bar: 'falleri', moo: false } ) 
-  thing2 = Thing.new(name: "Huhahah", meta_type: typ, properties_attributes: { foo: 4, bar: 'hollera', moo: false } ) 
-  thing3 = Thing.new(name: "hehehee", meta_type: typ, properties_attributes: { foo: 6, bar: 'trullala', moo: true } ) 
+  thing1 = Thing.new(name: "Har har", meta_type: typ, properties_attributes: { foo: 2, bar: 'falleri', moo: false } )
+  thing2 = Thing.new(name: "Huhahah", meta_type: typ, properties_attributes: { foo: 4, bar: 'hollera', moo: false } )
+  thing3 = Thing.new(name: "hehehee", meta_type: typ, properties_attributes: { foo: 6, bar: 'trullala', moo: true } )
   assert thing1.save && thing2.save && thing3.save
 
   assert_equal thing1.properties.bar, 'falleri'
@@ -88,7 +90,7 @@ and use this to make actual models using the MetaType:
   assert_equal 0, Thing.where_properties(foo: 1).count
   assert_equal 1, Thing.where_properties(foo: 2).count
   assert_equal 0, Thing.where_properties(foo: 3).count
-  
+
   assert_equal 0, Thing.where_properties_like(bar: '%ooo%').count
   assert_equal 1, Thing.where_properties_like(bar: '%eri%').count
   assert_equal 2, Thing.where_properties_like(bar: '%lle%').count
