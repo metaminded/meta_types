@@ -1,20 +1,36 @@
 # encoding: utf-8
-# (c) 2009-2011 metaminded UG, all rights reserved
+#--
+# Copyright (c) 2010-2012 Peter Horn, metaminded UG, metaminded.com
+#
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+#++
 
-<<-CREATE_SQL
-  create table meta_type_properties (
-    id                serial NOT NULL PRIMARY KEY,
-    sid               character varying,
-    label             character varying not null,
-    property_type_sid character varying not null,
-    required          boolean not null default false,
-    system            boolean not null default false,
-    dimension         character varying null default null,
-    default_value     character varying null default null,
-    created_at        timestamp without time zone,
-    updated_at        timestamp without time zone
-  );
-CREATE_SQL
+# --- Structure ---
+# id                serial NOT NULL PRIMARY KEY
+# sid               character varying
+# label             character varying not null
+# property_type_sid character varying not null
+# required          boolean not null default false
+# system            boolean not null default false
+# dimension         character varying null default null
+# default_value     character varying null default null
 
 class MetaTypeProperty < ActiveRecord::Base
 
@@ -37,6 +53,7 @@ class MetaTypeProperty < ActiveRecord::Base
     message: "overrides core functionality, please don't use that."
 
   scope :ordered, order("meta_type_members.position asc")
+  scope :editable, where('meta_type_properties.system is false')
 
   def name() "#{label} (#{property_type_sid}) " end
 
