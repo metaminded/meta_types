@@ -50,7 +50,7 @@ Create a table that has a <tt>yourcoice_hstore</tt> column, in this case, we use
 in the corresponding class, we declare that we want to mount the meta_type information with the name <tt>properties</tt>.
 
   class Thing < ActiveRecord::Base
-    attr_accessible :titile, :meta_type
+    attr_accessible :title, :meta_type
 
     meta_typed :properties
 
