@@ -25,14 +25,19 @@
 module MetaTypes::ActiveRecordAddons
 
   module ClassMethods
-    def meta_typed(nam, hstore=nil)
-      hstore ||= "#{nam}_hstore"
+    def meta_typed(nam, hstore=nil, options={})
+      if hstore.is_a? Hash
+        hstore = nil
+        options = hstore
+      end
+
+      hstore = hstore.try(:to_s) || "#{nam}_hstore"
       raise "No column named '#{hstore}' found." unless attribute_names.member? hstore
       vnam = "@_meta_properties_#{nam}"
       belongs_to :meta_type
 
       define_method nam do
-        return nil unless meta_type
+        return nil unless meta_type || options[:untyped]
         m = instance_variable_get(vnam)
         m ||= instance_variable_set(vnam, MetaTypes::MetaProperties.new(self, hstore))
       end
@@ -52,6 +57,10 @@ module MetaTypes::ActiveRecordAddons
         conditions_hash.inject(where("1=1")) do |relation, (k,v)|
           relation.where("#{hstore} -> ? LIKE ?", k.to_s, v.to_s)
         end
+      end
+
+      self.define_singleton_method :meta_type_options do
+        options
       end
 
       # validate do

@@ -146,6 +146,38 @@ ALTER SEQUENCE meta_types_id_seq OWNED BY meta_types.id;
 
 
 --
+-- Name: moos; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE moos (
+    id integer NOT NULL,
+    title character varying,
+    notess hstore,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+--
+-- Name: moos_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE moos_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: moos_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE moos_id_seq OWNED BY moos.id;
+
+
+--
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -212,6 +244,13 @@ ALTER TABLE meta_types ALTER COLUMN id SET DEFAULT nextval('meta_types_id_seq'::
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE moos ALTER COLUMN id SET DEFAULT nextval('moos_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE things ALTER COLUMN id SET DEFAULT nextval('things_id_seq'::regclass);
 
 
@@ -253,6 +292,14 @@ ALTER TABLE ONLY meta_types
 
 ALTER TABLE ONLY meta_types
     ADD CONSTRAINT meta_types_title_key UNIQUE (title);
+
+
+--
+-- Name: moos_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY moos
+    ADD CONSTRAINT moos_pkey PRIMARY KEY (id);
 
 
 --
@@ -307,3 +354,5 @@ INSERT INTO schema_migrations (version) VALUES ('20120507130255');
 INSERT INTO schema_migrations (version) VALUES ('20120507130303');
 
 INSERT INTO schema_migrations (version) VALUES ('20120508143058');
+
+INSERT INTO schema_migrations (version) VALUES ('20120603195829');

@@ -33,19 +33,37 @@ class MetaTypes::MetaProperties
   def initialize(model, hsname)
     self._model = model
     self._hsname = hsname
-    self._props = meta_type && meta_type.meta_type_properties.ordered.inject({}) do |h, mp|
+    self._props = if meta_type
+      meta_type.meta_type_properties.ordered.inject({}) do |h, mp|
+        h[mp.sid] = MetaTypes::MetaProperty.new(self, mp.sid)
 
-      h[mp.sid] = MetaTypes::MetaProperty.new(self, mp.sid)
+        self.define_singleton_method mp.sid do
+          h[mp.sid.to_s].value
+        end
 
-      self.define_singleton_method mp.sid do
-        h[mp.sid].value
+        self.define_singleton_method "#{mp.sid}=" do |v|
+          h[mp.sid.to_s].value = v
+        end
+        h
       end
+    elsif _model.class.meta_type_options[:untyped]
+      {}
+    else
+      raise "moo"
+    end
+  end
 
-      self.define_singleton_method "#{mp.sid}=" do |v|
-        h[mp.sid].value = v
-      end
-
-      h
+  def method_missing(meth, *args)
+    raise NoMethodError unless _model.class.meta_type_options[:untyped]
+    meth = meth.to_s
+    nam = meth
+    nam = nam[0..-2] if nam.end_with? '='
+    mtp = MetaTypeProperty.where(sid: nam).first
+    raise NoMethodError unless mtp
+    if meth.end_with? '='
+      _props[nam] = args.first
+    else
+      _props[nam]
     end
   end
 
@@ -57,8 +75,14 @@ class MetaTypes::MetaProperties
       dats = (1..3).map{|i| hash.delete("#{k}(#{i}i)")}.join("-")
       self.send "#{k}=", dats
     }
-    hash.each do |k,v|
-      self.send "#{k}=", v
+    if _model.class.meta_type_options[:untyped]
+      hash.each do |k,v|
+        _props[k.to_s].value = v
+      end
+    else
+      hash.each do |k,v|
+        self.send "#{k}=", v
+      end
     end
   end
 

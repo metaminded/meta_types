@@ -8,7 +8,7 @@ GIT
 PATH
   remote: .
   specs:
-    meta_types (0.0.1)
+    meta_types (0.0.2)
       activerecord-postgres-hstore
       pg
       rails (~> 3.2.3)

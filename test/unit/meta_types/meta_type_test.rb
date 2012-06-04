@@ -142,6 +142,7 @@ class MetaTypes::MetaTypeTest < ActiveSupport::TestCase
     bar_prop = thing.properties[:bar].meta_type_property
     moo_prop = thing.properties[:moo].meta_type_property
     bir_prop = thing.properties[:bir].meta_type_property
+
     assert_equal foo_prop.get_position_for(typ), foo_prop.id
     assert_equal bar_prop.get_position_for(typ), bar_prop.id
     assert_equal moo_prop.get_position_for(typ), moo_prop.id
