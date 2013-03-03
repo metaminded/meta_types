@@ -63,10 +63,10 @@ module MetaTypes::ActiveRecordAddons
         options
       end
 
-      # validate do
-      #   v = self.send(nam).valid?
-      #   errors.add(nam, v) if v.present?
-      # end
+      validate do
+        k = self.send(nam)
+        errors.add(nam, k.errors) if k && !k.valid?
+      end
     end
   end
 

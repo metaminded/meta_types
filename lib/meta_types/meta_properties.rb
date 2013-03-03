@@ -54,7 +54,8 @@ class MetaTypes::MetaProperties
   end
 
   def method_missing(meth, *args)
-    raise NoMethodError unless _model.class.meta_type_options[:untyped]
+    #puts "-----> #{meth}"
+    raise NoMethodError.new() unless _model.class.meta_type_options[:untyped]
     meth = meth.to_s
     nam = meth
     nam = nam[0..-2] if nam.end_with? '='
@@ -87,11 +88,21 @@ class MetaTypes::MetaProperties
   end
 
   def valid?
-    inject([]) do |e, v|
-      v.required && v.value.blank? ?
-        e << "#{v.label} must be present" :
-        e
-    end.join(", ").presence
+    puts "\n\n\n!!!VALID????\n\n\n"
+    @errors = ActiveModel::Errors.new(self)
+    valid = true
+    each do |v|
+      if v.required && v.value.blank?
+        @errors.add(v.sid, I18n.translate('errors.messages.blank'))
+        valid = false
+      end
+    end
+    valid
+    # !valid ? @errors : true
+  end
+
+  def errors
+    @errors ||= ActiveModel::Errors.new(self)
   end
 
   def persisted?()
