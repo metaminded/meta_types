@@ -88,7 +88,7 @@ class MetaTypes::MetaProperties
   end
 
   def valid?
-    puts "\n\n\n!!!VALID????\n\n\n"
+    # puts "\n\n\n!!!VALID????\n\n\n"
     @errors = ActiveModel::Errors.new(self)
     valid = true
     each do |v|
