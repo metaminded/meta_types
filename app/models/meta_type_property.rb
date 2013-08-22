@@ -34,8 +34,6 @@
 
 class MetaTypeProperty < ActiveRecord::Base
 
-  attr_accessible :sid, :label, :property_type_sid, :default_value, :required, :dimension, :choices
-
   # Associations
   has_many :meta_type_members
   has_many :meta_types, :through => :meta_type_members

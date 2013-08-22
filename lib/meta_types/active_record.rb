@@ -45,7 +45,7 @@ module MetaTypes::ActiveRecordAddons
       define_method "#{nam}_attributes=" do |hash|
         self.send(nam).update_attributes(hash)
       end
-      attr_accessible "#{nam}_attributes"
+      # attr_accessible "#{nam}_attributes"
 
       self.define_singleton_method "where_#{nam}" do |conditions_hash|
         conditions_hash.inject(where("1=1")) do |relation, (k,v)|

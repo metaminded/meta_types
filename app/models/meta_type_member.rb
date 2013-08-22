@@ -30,8 +30,6 @@
 
 class MetaTypeMember < ActiveRecord::Base
 
-  attr_accessible :position, :meta_type_id, :meta_type_property_id, :meta_type, :meta_type_property
-
   belongs_to :meta_type
   belongs_to :meta_type_property
 
