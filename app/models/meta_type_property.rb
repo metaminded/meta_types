@@ -50,8 +50,8 @@ class MetaTypeProperty < ActiveRecord::Base
   validates_exclusion_of :sid, in: MetaTypes::MetaProperties.instance_methods.map(&:to_s),
     message: "overrides core functionality, please don't use that."
 
-  scope :ordered, order("meta_type_members.position asc")
-  scope :editable, where('meta_type_properties.system is false')
+  scope :ordered,  -> { order("meta_type_members.position asc") }
+  scope :editable, -> { where('meta_type_properties.system is false') }
 
   def name() "#{label} (#{property_type_sid}) " end
 
